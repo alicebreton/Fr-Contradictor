@@ -1,5 +1,6 @@
 import spacy
 import re
+import os
 from openai import OpenAI
 from mlconjug3 import Conjugator
 
@@ -221,6 +222,11 @@ def antonym_sentence(sentence, verb_antonyms, adj_antonyms):
 
 
 def process_sentences(input_file, output_file, verb_antonym_file, adj_antonym_file):
+    
+    output_dir = os.path.dirname(output_file)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     verb_antonyms = load_antonyms(verb_antonym_file)
     adj_antonyms = load_antonyms(adj_antonym_file)
 
