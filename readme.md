@@ -1,7 +1,6 @@
 # Fr-Contradictor: A Toolkit for Generating Contradictions of French Sentences
 
 **Fr-Contradictor** is a Python toolkit designed to create contradictions of French sentences. This repository is aimed at researchers building datasets for misinformation studies, enabling controlled generation of contradictory statements from original sentences.
-
 ---
 
 ## Repository Structure
@@ -67,5 +66,4 @@ python ./scripts/spacy_analytics.py
 ```
 
 ## Limitation
-The contradiction output should be reviewed. Some mistakes might occur where, for example, the difference between a transitive and a intransitive verbs is not made. 
-
+The contradiction output should be reviewed. Some mistakes might occur where, for example, the difference between a transitive and a intransitive verb is not made.

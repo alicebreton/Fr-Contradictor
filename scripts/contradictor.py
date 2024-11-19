@@ -153,7 +153,7 @@ def negate_sentence(sentence):
                         sentence
                     )
 
-                return positive_sentence.strip().replace("ne ne", "").replace("pas pas", "")
+                return positive_sentence.strip().replace("ne ne", "").replace("pas pas", "").replace("se ne", "ne se")
 
     return positive_sentence
 
