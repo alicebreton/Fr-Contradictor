@@ -108,15 +108,14 @@ def transform_adjective_antonym(sentence, adj_antonyms):
 
 def negate_sentence(sentence):
     doc = nlp(sentence)
-    positive_sentence = sentence 
+    positive_sentence = sentence
+
     for token in doc:
-        if token.dep_ == "ROOT":
+        if token.dep_ == "ROOT" and token.pos_ == "VERB":
             # Case 1: The sentence is negative
             negation_tokens = [child for child in token.children if child.dep_ == "neg"]
             if negation_tokens:
-                
                 for negation in negation_tokens:
-
                     if negation.text in {"ne", "n'"}:
                         positive_sentence = re.sub(
                             rf"\b{negation.text}\b\s*{re.escape(token.text)}\s*\b(pas|jamais|plus|rien|aucun|nulle part|guère|point|que)?\b",
@@ -155,6 +154,17 @@ def negate_sentence(sentence):
                     )
 
                 return positive_sentence.strip().replace("ne ne", "").replace("pas pas", "").replace("se ne", "ne se")
+
+    # If no VERB ROOT is found, handle negation for AUX copula
+    for token in doc:
+        if token.pos_ == "AUX" and token.dep_ == "cop":
+            ne_form = "n'" if token.text[0] in "aeiouéèê" else "ne"
+            positive_sentence = re.sub(
+                rf"\b{token.text}\b",
+                f"{ne_form}{token.text} pas" if ne_form == "n'" else f"{ne_form} {token.text} pas",
+                sentence
+            )
+            return positive_sentence.strip()
 
     return positive_sentence
 
