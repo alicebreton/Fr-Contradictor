@@ -111,8 +111,20 @@ def negate_sentence(sentence):
     positive_sentence = sentence
 
     for token in doc:
+        # Case 1: Handle ROOT VERB preceded by AUX with aux:pass
         if token.dep_ == "ROOT" and token.pos_ == "VERB":
-            # Case 1: The sentence is negative
+            aux_tokens = [child for child in token.children if child.pos_ == "AUX" and child.dep_ == "aux:pass"]
+            if aux_tokens:
+                aux_token = aux_tokens[0]
+                ne_form = "n'" if aux_token.text[0] in "aeiouéèê" else "ne"
+                positive_sentence = re.sub(
+                    rf"\b{aux_token.text}\b",
+                    f"{ne_form}{aux_token.text} pas" if ne_form == "n'" else f"{ne_form} {aux_token.text} pas",
+                    sentence
+                )
+                return positive_sentence.strip()
+
+            # Check for existing negation
             negation_tokens = [child for child in token.children if child.dep_ == "neg"]
             if negation_tokens:
                 for negation in negation_tokens:
@@ -130,32 +142,45 @@ def negate_sentence(sentence):
                         )
                 return positive_sentence.strip()
 
-            # Case 2: The sentence is not negative; negate the main verb
+            # Add negation to the verb if no AUX aux:pass
+            ne_form = "n'" if token.text[0] in "aeiouéèê" else "ne"
+            reflexive_pronoun = None
+
+            for child in token.children:
+                if child.dep_ == "obj" and child.text in {"se", "s'"}:
+                    reflexive_pronoun = child.text
+                    break
+
+            if reflexive_pronoun:
+                positive_sentence = re.sub(
+                    rf"\b{reflexive_pronoun} {token.text}\b",
+                    f"{ne_form}{reflexive_pronoun} {token.text} pas" if ne_form == "n'" else f"{ne_form} {reflexive_pronoun} {token.text} pas",
+                    sentence
+                )
             else:
-                ne_form = "n'" if token.text[0] in "aeiouéèê" else "ne"
-                reflexive_pronoun = None
+                positive_sentence = re.sub(
+                    rf"\b{token.text}\b",
+                    f"{ne_form}{token.text} pas" if ne_form == "n'" else f"{ne_form} {token.text} pas",
+                    sentence
+                )
 
-                for child in token.children:
-                    if child.dep_ == "obj" and child.text in {"se", "s'"}:
-                        reflexive_pronoun = child.text
-                        break
+            return positive_sentence.strip().replace("ne ne", "").replace("pas pas", "").replace("se ne", "ne se")
 
-                if reflexive_pronoun:
-                    positive_sentence = re.sub(
-                        rf"\b{reflexive_pronoun} {token.text}\b",
-                        f"{ne_form}{reflexive_pronoun} {token.text} pas" if ne_form == "n'" else f"{ne_form} {reflexive_pronoun} {token.text} pas",
-                        sentence
-                    )
-                else:
-                    positive_sentence = re.sub(
-                        rf"\b{token.text}\b",
-                        f"{ne_form}{token.text} pas" if ne_form == "n'" else f"{ne_form} {token.text} pas",
-                        sentence
-                    )
+    # Case 2: Handle ADJ ROOT with AUX
+    for token in doc:
+        if token.dep_ == "ROOT" and token.pos_ == "ADJ":
+            aux_tokens = [child for child in token.head.children if child.pos_ == "AUX" and child.dep_ == "aux:pass"]
+            if aux_tokens:
+                aux_token = aux_tokens[0]
+                ne_form = "n'" if aux_token.text[0] in "aeiouéèê" else "ne"
+                positive_sentence = re.sub(
+                    rf"\b{aux_token.text}\b",
+                    f"{ne_form}{aux_token.text} pas" if ne_form == "n'" else f"{ne_form} {aux_token.text} pas",
+                    sentence
+                )
+                return positive_sentence.strip()
 
-                return positive_sentence.strip().replace("ne ne", "").replace("pas pas", "").replace("se ne", "ne se")
-
-    # If no VERB ROOT is found, handle negation for AUX copula
+    # Case 3: Handle COPULA (e.g., sentences with "être")
     for token in doc:
         if token.pos_ == "AUX" and token.dep_ == "cop":
             ne_form = "n'" if token.text[0] in "aeiouéèê" else "ne"
@@ -166,6 +191,7 @@ def negate_sentence(sentence):
             )
             return positive_sentence.strip()
 
+    # Default case: Return the original sentence if no modifications were made
     return positive_sentence
 
 
