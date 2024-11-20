@@ -39,7 +39,7 @@
    python -m spacy download fr_dep_news_trf
 ```
 
-Make sure you have your OpenAI key stored at line 31 of `./script/contradictor.py`. You do not have the enter a key for the script to work.
+Make sure you have your OpenAI key stored at line 31 of `script/contradictor.py`. You do not have the enter a key for the script to work.
 
 ## Usage
 
@@ -50,7 +50,7 @@ Make sure your reference sentences are stored in `./input` and make sure there i
 To build the contradiction dataset use this command:
 
 ```
-python ./scripts/contradictor.py
+python scripts/contradictor.py
 ```
 
 You should get a new file in the `./output` folder with the contradictions.
@@ -60,7 +60,7 @@ You should get a new file in the `./output` folder with the contradictions.
 In the `./dictionaries` folder, you can see two different dictionaries containing the antonyms of various verbs and adjectives. You can extract all the verb and adj roots from your reference file using this command:
 
 ```
-python ./scripts/extract_verb_adj_root.py
+python scripts/extract_verb_adj_root.py
 ```
 
 You will get a list of all the verbs and the adj that needs to be in both of the dictionaries. You should follow this syntax inside both of the dictionaries:
@@ -74,7 +74,7 @@ aider:nuire
 It can bu useful to extract various syntactical information with Spacy to improve the dictionaries. To do so, use this command:
 
 ```
-python ./scripts/spacy_analytics.py
+python scripts/spacy_analytics.py
 ```
 
 ## Limitation
