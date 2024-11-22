@@ -7,14 +7,14 @@
 
 ### 1. **./scripts**
 
-- **`contradictor.py`**Applies various techniques to generate contradictions of French sentences:
+- **`contradictor.py`**: Applies various techniques to generate contradictions of French sentences:
 
   - **Negation**: Introduces negations to sentences.
   - **Antonym Replacement**: Replaces verbs or adjectives with their antonyms while preserving grammatical congruence.
   - **GPT Contradictions**: In the last case that no Roots to be contradicted, this script uses OpenAI GPT to propose nuanced contradictions.
     **Input**: Text files with one sentence per line.
     **Output**: Contradicted sentences in different formats.
-- **`extract_verb_adj_root.py`**Extracts root verbs and adjectives from input sentences to aid in constructing antonym dictionaries.
+- **`extract_verb_adj_root.py`**: Extracts root verbs and adjectives from input sentences to aid in constructing antonym dictionaries.
 - **`spacy_analytics.py`**
   Annotates sentences with syntactic details using SpaCy’s French transformer model (`fr_dep_news_trf`). The output includes token-level information such as lemma, part-of-speech (POS), dependency labels, morphological features, and head. This annotation also aid in constructing the antonym dictionaries.
 
@@ -79,4 +79,4 @@ python scripts/spacy_analytics.py
 
 ## Limitation
 
-The contradiction output should be reviewed. Some mistakes might occur where, for example, the difference between a transitive and a intransitive verb is not made.
+The contradiction output should be reviewed. Some mistakes might occur where, for example, the difference between a transitive and a intransitive verb is not made. More specifically, the verbe **exiger** (V) usually accepts *quelqu'un V quelque chose* and **dispenser** *quelqu'un est V de quelque chose.* The difference between a **COD** and a **CID** is not made when conjugating the anotym.
